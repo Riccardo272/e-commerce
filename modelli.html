@@ -1,0 +1,177 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <title>BIKE ON ROAD</title>
+    <style>
+        body {
+            background-color: LightGray;
+            color: red;
+            text-align: left;
+        }
+
+        img {
+            width: 250px;
+            height: auto;
+            display: block;
+        }
+
+        p,
+        label,
+        button {
+            text-align: left;
+            justify-content: left;
+            display: inline-block;
+            font-size: 18px;
+        }
+
+        h1 {
+            font-size: 34px;
+            color: red;
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        button {
+            background-color: #555;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #444;
+            animation: pulse 0.5s infinite;
+        }
+
+        table {
+            margin: left;
+            text-align: left;
+        }
+
+        td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: left;
+            color: black;
+        }
+
+        #carrello-icon {
+            position: fixed;
+            top: 20px;
+            right: 30px;
+            cursor: pointer;
+            width: 50px;
+            height: auto;
+        }
+    </style>
+
+    <script>
+        function apriPaginaCarrello() {
+            window.location.href = 'carello.html';
+        }
+
+        function apriPaginaDinamica(nomePagina) {
+            window.location.href = nomePagina;
+        }
+    </script>
+</head>
+
+<body>
+
+
+    <h1>BIKE ON ROAD</h1>
+
+
+    <table>
+        <tr>
+            <td><img src="https://www.salvatorepumo.it/wp-content/uploads/2021/06/logo-rosso-bianco-blu-honda.jpg" alt="Kawasaki Ninja Z-H2">
+                <p style="color: #C8102E;">HONDA</p>
+                <button id="button1" onclick="apriPaginaDinamica('paginaHonda.html')">Seleziona</button>
+            </td>
+            <td>FONDAZIONE E PRIMI PASSI(1946-1950): Soichiro Honda fonda la Honda Technical Research Institute nel 1946, e nei primi anni si concentra sulla produzione della A-Type, una motocicletta con motore ausiliario.
+                <br>
+                SUCCESSO NEI GRAN PREMI(1950-1960): La Honda fa il suo ingresso nelle competizioni motociclistiche negli anni '50 e vince il Campionato del Mondo nella classe 125 cc nel 1959, dimostrando la sua capacità di competere a livello globale.
+                <br>
+                INNOVAZIONI TECNOLOGICHE(anni '60): La Honda introduce la Super Cub C100 nel 1960, diventando la moto più venduta della storia. Nel 1969, rivoluziona il settore con la CB750 Four, la prima motocicletta a quattro cilindri in linea.
+                <br>
+                EVOLUZIONE E DIVERSIFICAZIONE (1970-1980): La gamma di modelli si espande negli anni '70 e '80, includendo la serie Gold Wing e le moto off-road della serie CR.
+                <br>
+                IMPEGNO DELL'ECOLOGIA E NELLE PRESTAZIONI (anni '90 - 2000): La Honda si impegna per tecnologie eco-friendly, presentando la prima moto a idrogeno nel 1990. Nel 2001, l'azienda lancia la Gold Wing 1800 con un motore a sei cilindri.
+                <br>
+                OGGI E IL FUTURO: La Honda continua a guidare l'industria motociclistica, offrendo una vasta gamma di modelli che spaziano dalle moto da città alle cruiser. L'azienda mantiene l'impegno per l'innovazione, la sicurezza e l'ecologia.</td>
+        </tr>
+
+        <tr>
+            <td><img src="https://immagini.insella.it/sites/default/files/news_anteprima/2021/10/th_black_river_mark.jpg" alt="Kawasaki Ninja H2">
+                <p style="color: #1B772F;">KAWASAKI</p>
+                <button id="button2" onclick="apriPaginaDinamica('paginaKawasaki.html')">Seleziona</button>
+            </td>
+            <td>FONDAZIONE E INGRESSO NEL SETTORE MOTOCICLISTICO (anni '50): Kawasaki Heavy Industries, fondata nel 1896 in Giappone, inizia a produrre motociclette negli anni '50. Il primo successo arriva con la Meihatsu, una moto da 125 cc nel 1953.
+                <br>
+                ESORDIO NELLE COMPETIZIONI (anni '60): Kawasaki inizia a partecipare alle competizioni negli anni '60, guadagnandosi una reputazione nel motocross e nelle gare su pista. Nel 1969, introduce la Mach III 500, una motocicletta da strada dalle prestazioni eccezionali.
+                <br>
+                ERA Z-SERIES (anni '70 - '80): La Kawasaki Z1, introdotta nel 1972, è una delle superbike più iconiche di tutti i tempi. La Z-Series diventa famosa per le sue prestazioni e il suo stile distintivo, contribuendo al successo di Kawasaki nel mercato delle moto sportive.
+                <br>
+                DOMINIO NEI GRAN PREMI (anni '80): Kawasaki afferma la sua presenza nei Gran Premi di motocross e supercross negli anni '80, grazie alle vittorie di piloti come Jeff Ward e Eddie Lawson.
+                <br>
+                INTRODUZIONE DELLE NINJA (anni '80 - '90): La Kawasaki Ninja GPz900R del 1984 segna l'inizio della serie Ninja, stabilendo nuovi standard di velocità e prestazioni nelle moto sportive.
+                <br>
+                ESPANSIONE NELLA GAMMA E INNOVAZIONI(anni 2000 - oggi): Kawasaki continua a diversificare la sua gamma, introducendo modelli come la Z1000 e la Versys. Nel 2015, l'azienda presenta la H2R, una moto sovralimentata, dimostrando l'impegno per l'innovazione tecnologica.
+                <br>
+                MOTOCROSS E OFF-ROAD(continua): Kawasaki mantiene una forte presenza nel motocross e nell'off-road, con modelli come la KX-Series che continuano a ottenere successi nelle competizioni.
+                <br>
+                FOCUS SULL'ECOLOGIA (anni recenti): Come risposta alle crescenti preoccupazioni ambientali, Kawasaki inizia a esplorare tecnologie più ecologiche e sviluppa modelli ibridi e elettrici.</td>
+        </tr>
+
+        <tr>
+
+            <td>
+                <img src="https://i.pinimg.com/originals/6d/3c/47/6d3c47ee24e3faea124d83a39fdc247b.jpg" alt="Kawasaki Ninja H2R">
+                <p style="color:red;">DUCATI</p>
+                <button id="button3" onclick="apriPaginaDinamica('ducati.html')">Seleziona</button>
+            </td>
+            <td>FONDAZIONE E PRIMI PASSI (1926-1950): Ducati è fondata nel 1926 a Bologna, in Italia, inizialmente come produttrice di radio. Nel dopoguerra, negli anni '40, inizia a produrre motociclette, con il primo modello Cucciolo nel 1950, caratterizzato da un motore ausiliario per biciclette.
+                <br>
+                MOTOCICLETTE MONOPOSTO E SUCCESSO NELLE COMPETIZIONE (anni '50): Ducati si distingue per la produzione di motociclette monoposto con motori a quattro tempi. Negli anni '50, ottiene successi nelle competizioni, vincendo il Gran Premio dell'Ulster del 1955.
+                <br>
+                PASSAGGIO DI PROPRIETA'E ERA DEI MOTORI A DESMODROMICO (anni '80): Nel 1983, Ducati viene acquisita da Cagiva, e sotto la guida dell'ingegnere Massimo Bordi, si concentra sul perfezionamento dei motori a distribuzione desmodromica, un tratto distintivo delle Ducati moderne.
+                <br>
+                DOMINO NEI CAMPIONATI SUPERBIKE (anni '90): Le motociclette Ducati 851 e 888 dominano i campionati Superbike negli anni '90, con piloti come Carl Fogarty che portano la marca alla ribalta internazionale.
+                <br>
+                INTRODUZIONE DELLA MONSTER (1993): Nel 1993, Ducati lancia la Monster, una moto naked con design innovativo che diventa un'icona e contribuisce al successo commerciale dell'azienda.
+                <br>
+                SVILUPPO DELLE MOTO SPORTIVE E SUPERSPORTIVE (anni 2000 - oggi): Ducati continua a produrre motociclette sportive e supersportive di alto livello, come la serie Panigale, che stabilisce nuovi standard in termini di prestazioni e tecnologia.
+                <br>
+                ACQUISIZIONE DA PARTE DI AUDI(2012): Nel 2012, Ducati viene acquistata dal gruppo Audi, portando nuove risorse e investimenti per lo sviluppo tecnologico e la crescita dell'azienda.
+                <br>
+                DIVERSIFICAZIONE DELLA GAMMA (anni recenti): Ducati espande la sua gamma con modelli come la Multistrada per il turismo e l'Enduro, cercando di soddisfare una varietà di esigenze dei motociclisti.
+                <br>
+                IMPEGNO NELL'ELETRICO (anni recenti): Ducati inizia a esplorare il settore delle moto elettriche con la presentazione di modelli elettrici come la Ducati Elettrica.
+            </td>
+        </tr>
+
+    </table>
+
+    <!-- Icona del carrello -->
+    <img id="carrello-icon" src="https://images.emojiterra.com/twitter/v13.1/512px/1f6d2.png" alt="Carrello" width="30" height="30" onclick="apriPaginaCarrello()">
+</body>
+
+</html>

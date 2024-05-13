@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <!-- Metadati -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Honda Motorcycle Models</title>
+    <!-- Stili CSS -->
+    <style>
+        /* Stili per il corpo della pagina */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: LightGray;
+            color: black;
+            margin: 20px;
+            text-align: center;
+        }
+
+        /* Stili per l'intestazione */
+        h1 {
+            font-size: 34px;
+            color: red;
+            text-align: center;
+            /* Animazione pulsante */
+            animation: pulse 2s infinite;
+        }
+
+        /* Animazione pulsante */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Stili per il contenitore dei modelli */
+        .container {
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: space-evenly;
+            overflow-x: auto;
+        }
+
+        /* Stili per le carte dei modelli */
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: white;
+            margin: 10px;
+            padding: 10px;
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Stili per le immagini */
+        img {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            margin-top: 10px;
+        }
+
+        /* Stili per i pulsanti */
+        .btn {
+            padding: 10px;
+            margin: 10px;
+            cursor: pointer;
+            background-color: #00bcd4;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+        }
+
+        /* Stili per i pulsanti al passaggio del mouse */
+        .btn:hover {
+            background-color: #218838 !important;
+            color: #fff;
+        }
+
+        /* Stili per il pulsante "Home" */
+        #button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+
+        /* Stili per il pulsante "Home" */
+        #button .btn {
+            padding: 10px;
+            margin: 20px;
+            cursor: pointer;
+            background-color: #00bcd4;
+            color: #fff;
+            border-radius: 5px;
+        }
+
+        /* Stili per il pulsante "Home" al passaggio del mouse */
+        #button .btn:hover {
+            background-color: #218838;
+        }
+
+        /* Nascondi l'input del file */
+        input[type="file"] {
+            display: none;
+        }
+
+        /* Stili per l'icona del carrello */
+        .carrello-icon {
+            position: fixed;
+            top: 20px;
+            right: 30px;
+            cursor: pointer;
+            width: 50px;
+            height: auto;
+        }
+
+        /* Stili per i checkbox dei colori */
+        .color-checkbox {
+            margin-top: 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Icona del carrello -->
+    <a class="carrello-icon" onclick="goToCart()">
+        <img src="https://images.emojiterra.com/twitter/v13.1/512px/1f6d2.png" alt="Carrello">
+    </a>
+
+    <!-- Pulsante per tornare alla Home -->
+    <div id="button">
+        <button class="btn" onclick="goToHome()">Home</button>
+    </div>
+
+    <!-- Titolo -->
+    <h1>HONDA </h1>
+
+    <!-- Contenitore per i modelli di moto -->
+    <div id="content" class="container"></div>
+
+    <!-- Aggiunta del modal per visualizzare l'elemento aggiunto al carrello -->
+    <div id="cartModal" class="modal">
+        <div id="cartModalContent" class="modal-content"></div>
+    </div>
+
+    <!-- Script JavaScript -->
+    <script>
+        // Funzione che viene chiamata quando la pagina è completamente caricata
+        window.onload = function () {
+            loadFile('Honda.json'); // Carica i dati dai file JSON
+            updateCartIcon(); // Aggiorna l'icona del carrello
+        };
+
+        // Funzione per tornare alla Home
+        function goToHome() {
+            window.location.href = "modelli.html";
+        }
+
+        // Funzione per andare al Carrello
+        function goToCart() {
+            window.location.href = "carello.html";
+        }
+
+        // Funzione per aggiungere un elemento al carrello
+        function addToCart(item) {
+            addToLocalStorage(item); // Aggiungi l'elemento al localStorage
+            updateCartIcon(); // Aggiorna l'icona del carrello
+        }
+
+        // Funzione per caricare i dati da un file JSON
+        function loadFile(fileName) {
+            fetch(fileName)
+                .then(response => response.json())
+                .then(data => displayData(data)) // Visualizza i dati
+                .catch(error => console.error('Error loading JSON file:', error));
+        }
+
+        // Funzione per visualizzare i dati dei modelli di moto
+        function displayData(jsonData) {
+            var items = jsonData.items; // Ottiene gli elementi dal JSON
+            var contentDiv = document.getElementById('content'); // Ottiene il div contenitore
+
+            if (!contentDiv) {
+                console.error("Element with ID 'content' not found.");
+                return;
+            }
+
+            contentDiv.innerHTML = ''; // Svuota il contenitore
+
+            // Ciclo per ogni elemento e visualizzarlo
+            items.forEach(function (item, i) {
+                var cardDiv = document.createElement('div');
+                cardDiv.className = 'card';
+
+                var img = document.createElement('img');
+                img.src = item.img;
+                cardDiv.appendChild(img);
+
+                var name = document.createElement('h2');
+                name.textContent = item.name;
+                cardDiv.appendChild(name);
+
+                var price = document.createElement('p');
+                price.textContent = "Prezzo: " + item.price;
+                cardDiv.appendChild(price);
+
+                var colorContainer = document.createElement('div');
+                colorContainer.className = 'color-checkbox';
+
+                item.colors.forEach(function (color) {
+                    var colorText = document.createElement('p');
+                    colorText.textContent = "Colori: " + color;
+                    colorContainer.appendChild(colorText);
+                });
+
+                cardDiv.appendChild(colorContainer);
+
+                var power = document.createElement('p');
+                power.textContent = "Potenza: " + item.power;
+                cardDiv.appendChild(power);
+
+                var seatHeight = document.createElement('p');
+                seatHeight.textContent = "Altezza sella: " + item.seatHeight;
+                cardDiv.appendChild(seatHeight);
+
+                var addToCartButton = document.createElement('button');
+                addToCartButton.className = 'btn';
+                addToCartButton.textContent = 'Aggiungi al carrello';
+                addToCartButton.addEventListener('click', function () {
+                    addToCart(item);
+                });
+
+                cardDiv.appendChild(addToCartButton);
+
+                contentDiv.appendChild(cardDiv);
+            });
+        }
+
+        // Funzione per aggiungere un elemento al localStorage
+        function addToLocalStorage(item) {
+            var cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart.push(item);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            displayCartInModal(item); // Visualizza il modal con l'elemento aggiunto al carrello
+        }
+
+        // Funzione per aggiornare l'icona del carrello
+        function updateCartIcon() {
+            var cart = JSON.parse(localStorage.getItem('cart')) || [];
+            var carrelloIcon = document.querySelector('.carrello-icon');
+
+            if (carrelloIcon) {
+                if (cart.length > 0) {
+                    carrelloIcon.classList.remove('no-checkbox');
+                } else {
+                    carrelloIcon.classList.add('no-checkbox');
+                }
+            }
+        }
+
+        // Gestione degli eventi delle frecce direzionali del browser
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'ArrowLeft') { // Freccia sinistra
+                goToHome();
+            } else if (event.key === 'ArrowRight') { // Freccia destra
+                goToCart();
+            }
+        });
+    </script>
+</body>
+
+</html>

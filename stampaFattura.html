@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+<meta charset="UTF-8">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: auto;
+    }
+
+    .invoice-container {
+      max-width: 600px;
+  margin: 0 auto;
+  height: auto; /* Altezza automatica */
+  overflow: auto; /* Aggiungi uno scorrimento se l'altezza dei contenuti supera l'altezza del contenitore */
+    }
+
+    .invoice-address {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+    }
+
+    .invoice-header {
+      text-align: left;
+      margin-bottom: 20px;
+    }
+
+    .invoice-customer-info,
+    .invoice-details {
+      margin-bottom: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    .iva {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    #invoiceTotal {
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="invoice-container">
+    <div class="invoice-address">
+      <p>Via Garibaldi 25, CAP <span id="randomCap"></span></p>
+      <p>Telefono: <span id="randomPhoneNumber"></span></p>
+      <p>Email: schiavone.riccardo@itiscannizzaro.edu.it</p>
+      <p>Codice Fiscale: <span id="randomCF"></span></p>
+    </div>
+
+    <div class="invoice-header">
+      <h2 id="invoiceName"></h2>
+      <p>Data di Composizione: <span id="compositionDate"></span></p>
+    </div>
+
+    <div class="invoice-customer-info">
+      <p id="customerName"></p>
+      <p id="customerLocation"></p>
+      <p id="customerCF"></p>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Quantit&#225;</th>
+          <th>Prezzo</th>
+        </tr>
+      </thead>
+      <tbody id="invoiceItems"></tbody>
+    </table>
+
+    <!-- Aggiunto il totale con IVA -->
+    <div id="invoiceTotal">Totale con IVA: €<span id="totalWithIva"></span>0</div>
+  </div>
+
+  <script>
+    window.onload = function () {
+      loadInvoiceData();
+    };
+
+    function loadInvoiceData() {
+      var invoiceData = sessionStorage.getItem('invoice');
+
+      if (!invoiceData) {
+        console.error('Invoice data not found.');
+        return;
+      }
+
+      var invoice = JSON.parse(invoiceData);
+
+      // Popola i dettagli della fattura
+      document.getElementById('invoiceName').innerText = invoice.name;
+
+      // Genera e popola i dettagli casuali
+      document.getElementById('randomCap').innerText = generateRandomNumber(10000, 99999);
+      document.getElementById('randomPhoneNumber').innerText = generateRandomNumber(1000000000, 9999999999);
+      document.getElementById('randomCF').innerText = generateRandomString(16, true);
+
+      // Popola i dettagli del cliente
+      var customerInfo = invoice.customer;
+      document.getElementById('customerName').innerText = 'Cliente: ' + customerInfo.firstName + ' ' + customerInfo.lastName;
+      document.getElementById('customerLocation').innerText = 'Luogo: ' + customerInfo.state + ', ' + customerInfo.country;
+      document.getElementById('customerCF').innerText = 'Codice Fiscale: ' + generateRandomString(16, true);
+
+      // Popola i dettagli della moto (tabella)
+      var itemsTable = document.getElementById('invoiceItems');
+      var itemsHTML = '';
+      var totalWithoutIva = 0;
+
+      for (var i = 0; i < invoice.items.length - 1; i++) {
+        var item = invoice.items[i];
+        itemsHTML += '<tr>';
+        itemsHTML += '<td>' + item.productName + '</td>';
+        itemsHTML += '<td>' + item.quantity + '</td>';
+        itemsHTML += '<td>' + item.price + '</td>';
+        itemsHTML += '</tr>';
+
+        // Aggiungi il prezzo dell'elemento al totale senza IVA
+        var itemPrice = parseFloat(item.price);
+        totalWithoutIva += isNaN(itemPrice) ? 0 : itemPrice * item.quantity;
+      }
+
+      itemsTable.innerHTML = itemsHTML;
+
+      // Calcola e popola l'IVA
+      var ivaRate = 0.22;
+      var ivaAmount = totalWithoutIva * ivaRate;
+      itemsTable.innerHTML += '<tr><td>IVA (' + (ivaRate * 100) + '%)</td><td colspan="2">' + ivaAmount.toFixed(3) + '</td></tr>';
+
+      // Calcola e popola il totale con IVA
+      var totalWithIva = totalWithoutIva + ivaAmount;
+      document.getElementById('totalWithIva').innerText = totalWithIva.toFixed(2);
+      
+      // Popola la data di composizione
+      var compositionDateElement = document.getElementById('compositionDate');
+      var currentDate = new Date();
+      compositionDateElement.innerText = currentDate.toLocaleDateString() + ' ' + currentDate.toLocaleTimeString();
+    }
+
+    function generateRandomNumber(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function generateRandomString(length, includeNumbers) {
+      var result = '';
+      var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+      if (includeNumbers) {
+        characters += '0123456789';
+      }
+      var charactersLength = characters.length;
+      for (var i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      }
+      return result;
+    }
+  </script>
+</body>
+
+</html>

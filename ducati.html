@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: LightGray;
+      color: black;
+      margin: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 34px;
+      color: red;
+      text-align: center;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.1);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: space-evenly;
+      overflow-x: auto;
+    }
+
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: white;
+      margin: 10px;
+      padding: 10px;
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    img {
+      width: 100%;
+      max-width: 400px;
+      height: auto;
+      margin-top: 10px;
+    }
+
+    .btn {
+      padding: 10px;
+      margin: 20px;
+      cursor: pointer;
+      background-color: #00bcd4;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .btn:hover {
+      background-color: #218838;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .carrello-icon {
+      position: fixed;
+      top: 20px;
+      right: 30px;
+      cursor: pointer;
+      width: 50px;
+      height: auto;
+    }
+
+    #button {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+    }
+
+    .no-checkbox {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .color-checkbox {
+      display: flex;
+      align-items: center;
+    }
+
+    .color-checkbox input {
+      margin-right: 5px;
+    }
+
+    button.addToCart {
+      padding: 10px;
+      margin: 20px;
+      cursor: pointer;
+      background-color: #00bcd4;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+    }
+
+    button.addToCart:hover {
+      background-color: #218838;
+    }
+
+    .card.selected {
+      border: 2px solid #218838;
+    }
+
+    .cart-item img {
+      width: 100%;
+      max-width: 200px;
+      height: auto;
+    }
+
+    .cart-details {
+      text-align: left;
+      margin-top: 20px;
+    }
+
+    #cartContent {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <a href="carello.html" class="carrello-icon"><img
+      src="https://images.emojiterra.com/twitter/v13.1/512px/1f6d2.png" alt="Carrello"></a>
+
+  <div id="button">
+    <button class="btn" onclick="goToHome()">Home</button>
+  </div>
+
+  <h1>DUCATI </h1>
+
+  <div id="content" class="container"></div>
+  <div id="cartContent" class="container">
+    <div class="cart-details" id="cartDetails"></div>
+  </div>
+
+  <script>
+    function goToHome() {
+      window.location.href = "modelli.html";
+    }
+
+    function addToCart(name, price, img, colors, power, seatHeight) {
+      var cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart.push({
+        name: name,
+        price: price,
+        img: img,
+        colors: colors,
+        power: power,
+        seatHeight: seatHeight
+      });
+      localStorage.setItem('cart', JSON.stringify(cart));
+      displayCart();
+    }
+
+    window.onload = function () {
+      loadFile('csv.csv');
+    };
+
+    function loadFile(fileName) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', fileName, true);
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+          var csvData = xhr.responseText;
+          displayData(csvData);
+        }
+      };
+      xhr.send();
+    }
+
+    function displayData(csvData) {
+      var rows = csvData.split('\n');
+      var contentDiv = document.getElementById('content');
+
+      if (!contentDiv) {
+        console.error("Element with ID 'content' not found.");
+        return;
+      }
+
+      contentDiv.innerHTML = '';
+
+      for (var i = 1; i <= 3 && i < rows.length; i++) {
+        var columns = rows[i].split(',');
+        var cardDiv = document.createElement('div');
+        cardDiv.className = 'card';
+
+        var img = document.createElement('img');
+        img.src = columns[0] ? columns[0].replace(/"/g, '') : '';
+        cardDiv.appendChild(img);
+
+        var title = document.createElement('h2');
+        title.textContent = columns[1] ? columns[1].replace(/"/g, '') : '';
+        cardDiv.appendChild(title);
+
+        var price = document.createElement('p');
+        price.textContent = (columns[2] ? columns[2].replace(/"/g, '') : '');
+        cardDiv.appendChild(price);
+
+        var color = document.createElement('p');
+        color.textContent = "Colore: " + (columns[3] ? columns[3].replace(/"/g, '') : '');
+        cardDiv.appendChild(color);
+
+        var color1 = document.createElement('p');
+        color1.textContent = "Colore: " + (columns[4] ? columns[4].replace(/"/g, '') : '');
+        cardDiv.appendChild(color1);
+
+        var color2 = document.createElement('p');
+        color2.textContent = "Colore: " + (columns[5] ? columns[5].replace(/"/g, '') : '');
+        cardDiv.appendChild(color2);
+
+        var power = document.createElement('p');
+        power.textContent =  (columns[6] ? columns[6].replace(/"/g, '') : '');
+        cardDiv.appendChild(power);
+
+        var seatHeight = document.createElement('p');
+        seatHeight.textContent =  (columns[7] ? columns[7].replace(/"/g, '') : '');
+        cardDiv.appendChild(seatHeight);
+
+        var addToCartButton = document.createElement('button');
+        addToCartButton.className = 'addToCart';
+        addToCartButton.textContent = 'Aggiungi al carrello';
+        addToCartButton.onclick = function () {
+          var card = this.parentNode;
+          var img = card.querySelector('img').src;
+          var name = card.querySelector('h2').textContent;
+          var price = card.querySelector('p').textContent;
+          img = img.trim();
+          var colors = [];
+          var colorElements = card.querySelectorAll('p:nth-child(4), p:nth-child(5), p:nth-child(6)');
+          colorElements.forEach(function (colorElement) {
+            colors.push(colorElement.textContent.replace(/Colore[0-9]*: /, ''));
+          });
+          var power = card.querySelector('p:nth-child(7)').textContent;
+          var seatHeight = card.querySelector('p:nth-child(8)').textContent;
+          addToCart(name, price, img, colors, power, seatHeight);
+        };
+
+        cardDiv.appendChild(addToCartButton);
+
+        contentDiv.appendChild(cardDiv);
+      }
+    }
+
+    function displayCart() {
+      var cart = JSON.parse(localStorage.getItem('cart')) || [];
+      var cartContentDiv = document.getElementById('cartContent');
+      var cartDetailsDiv = document.getElementById('cartDetails');
+
+      if (!cartContentDiv || !cartDetailsDiv) {
+        console.error("Element with ID 'cartContent' or 'cartDetails' not found.");
+        return;
+      }
+
+      cartContentDiv.innerHTML = '';
+      cartDetailsDiv.innerHTML = '';
+
+      for (var i = 0; i < cart.length; i++) {
+        var cartItem = cart[i];
+        var cartItemDiv = document.createElement('div');
+        cartItemDiv.className = 'cart-item';
+
+        var itemImg = document.createElement('img');
+        itemImg.src = cartItem.img;
+        itemImg.alt = "Immagine del prodotto";
+        itemImg.style.width = "100%";
+        itemImg.style.maxWidth = "200px";
+        cartItemDiv.appendChild(itemImg);
+
+        var itemName = document.createElement('p');
+        itemName.textContent = "Nome: " + cartItem.name;
+        cartItemDiv.appendChild(itemName);
+
+        var itemPrice = document.createElement('p');
+        itemPrice.textContent =  cartItem.price;
+        cartItemDiv.appendChild(itemPrice);
+
+        var itemColors = document.createElement('div');
+        itemColors.className = 'color-checkbox';
+
+        for (var j = 0; j < cartItem.colors.length; j++) {
+          var colorCheckbox = document.createElement('input');
+          colorCheckbox.type = 'checkbox';
+          colorCheckbox.checked = true;
+          colorCheckbox.disabled = true;
+          colorCheckbox.className = 'no-checkbox';
+
+          var colorLabel = document.createElement('label');
+          colorLabel.textContent = "Colore: " + cartItem.colors[j];
+
+          itemColors.appendChild(colorCheckbox);
+          itemColors.appendChild(colorLabel);
+        }
+
+        cartItemDiv.appendChild(itemColors);
+
+        var itemPower = document.createElement('p');
+        itemPower.textContent =  cartItem.power;
+        cartItemDiv.appendChild(itemPower);
+
+        var itemSeatHeight = document.createElement('p');
+        itemSeatHeight.textContent = cartItem.seatHeight;
+        cartItemDiv.appendChild(itemSeatHeight);
+
+        cartContentDiv.appendChild(cartItemDiv);
+
+        if (window.location.href.includes("carello.html")) {
+          var detailsParagraph = document.createElement('p');
+          detailsParagraph.textContent = `
+                        Nome: ${cartItem.name}
+                        Prezzo: ${cartItem.price}
+                        Colori: ${cartItem.colors.join(', ')}
+                        Potenza: ${cartItem.power}
+                        Altezza sella: ${cartItem.seatHeight}
+                    `;
+          cartDetailsDiv.appendChild(detailsParagraph);
+        }
+      }
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<kawasakiModels>
+    <model>
+        <imageLink>//storage.kawasaki.eu/public/kawasaki.eu/en-EU/model/19ZX1000Y_201GY3DRS1CG_A.png</imageLink>
+        <name>Kawasaki Ninja H2R</name>
+	<price>56.000€</price>
+
+            <color>Verde</color>
+            <color1>Grigio</color1>
+            <color2>Nero</color2>
+
+        <powerCV>310CV</powerCV>
+        <seatHeight>830mm</seatHeight>
+    </model>
+    <model>
+        <imageLink>//storage.kawasaki.eu/public/kawasaki.eu/en-EU/model/23MY_Ninja_ZX-10R_GN1_STU__2_.png</imageLink>
+        <name>Kawasaki Ninja ZX-10R</name>
+	<price>21.590€</price>    
+ 
+            <color>Nero / Carbonio</color>
+            <color1>Verde / Nero</color1>
+            <color2>Grigio / Nero</color2>
+            <color3>Blu / Nero</color3>
+
+        <powerCV>205CV</powerCV>
+        <seatHeight>835mm</seatHeight>
+    </model>
+    <model>
+        <imageLink>//storage.kawasaki.eu/public/kawasaki.eu/en-EU/model/24MY_Ninja_ZX-6R_GN1_STU__2_.png</imageLink>
+        <name>Kawasaki Ninja ZX-6R</name>
+	<price>12.790€</price>
+
+            <color>Nero / Verde</color>
+            <color1>Blu</color1>
+            <color2>Nero / Grigio</color2>
+            <color3>Verde KRT Edition</color3>
+            <color4>Rosso / Nero</color4>
+        <powerCV>129CV</powerCV>
+        <seatHeight>830mm</seatHeight>
+    </model>
+</kawasakiModels>

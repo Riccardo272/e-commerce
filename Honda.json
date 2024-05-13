@@ -1,0 +1,28 @@
+{
+  "items": [
+    {
+      "img": "https://www.honda.it/content/dam/central/motorcycles/colour-picker/supersports/cbr1000rr-r/cbr1000rr-r_sp_carbon_2024/nh-c33p_mattepearlmorionblack/24YM_CBR1000RR-R_FIREBLADE_Studio_MAT_PEARL_MORION_BLACK_SP_Carbon_Edition_RHS.png/jcr:content/renditions/fb_r_w.webp",
+      "price":"23.390€",
+      "name": "Honda CBR1000RR-R",
+      "colors": ["Rosso", "Nero"],
+      "power": "217CV",
+      "seatHeight": "830mm"
+    },
+    {
+      "img": "https://www.honda.it/content/dam/central/motorcycles/colour-picker/supersports/cbr600rr/cbr600rr_2024/nh-a86m_matte_ballistic_black_metallic/cbr600rr_2024_nh-a86m_matte_ballistic_black_metallic.png/jcr:content/renditions/fb_r_w.webp",
+"price":"12.000€",      
+"name": "Honda CBR600RR",
+      "colors": ["Rosso", "Nero"],
+      "power": "121CV",
+      "seatHeight": "820mm"
+    },
+    {
+      "img": "https://www.honda.it/content/dam/central/motorcycles/colour-picker/supersports/cbr500r/cbr500r_2024/nh-436m_mattegunpowderblackmetallic/24YM_CBR500R_Studio_MAT_GUNPOWDER_BLACK_METALLIC_RHS.png/jcr:content/renditions/fb_r_w.webp",
+      "price":"7.300€",
+"name": "Honda CBR500R",
+      "colors": ["Rosso", "Nero"],
+      "power": "48CV",
+      "seatHeight": "785mm"
+    }
+  ]
+}

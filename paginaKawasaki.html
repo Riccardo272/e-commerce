@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+  <!-- Metadati -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kawasaki Motorcycle Models</title>
+  <!-- Stili CSS -->
+  <style>
+    /* Stili per il corpo della pagina */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: LightGray;
+      color: black;
+      margin: 20px;
+      text-align: center;
+    }
+
+    /* Stili per il contenuto dei modelli */
+    #modelContent {
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: space-around;
+      margin-top: auto;
+    }
+
+    /* Stili per le carte dei modelli */
+    .modelCard {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 10px;
+      width: 300px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Stili per le immagini */
+    img {
+      width: 100%;
+      max-width: 400px;
+      height: auto;
+      margin-top: 10px;
+    }
+
+    /* Stili per gli header */
+    h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: 34px;
+      color: green;
+      text-align: center;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.1);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    /* Stili per l'icona del carrello */
+    #carrello-icon {
+      position: fixed;
+      top: 20px;
+      right: 30px;
+      cursor: pointer;
+      width: 50px;
+      height: auto;
+    }
+
+    /* Stili per il pulsante "HOME" */
+    #button {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 10px;
+      margin: 20px;
+      cursor: pointer;
+      background-color: #00bcd4; 
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+    }
+
+    /* Stili per il pulsante "HOME" al passaggio del mouse */
+    #button:hover {
+      background-color: #218838;
+    }
+
+    /* Stili per il pulsante "Aggiungi al carrello" */
+    .addToCartButton {
+      background-color: #00bcd4;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    /* Stili per il pulsante "Aggiungi al carrello" al passaggio del mouse */
+    .addToCartButton:hover {
+      background-color: #45a049;
+    }
+
+    /* Media queries per adattare il layout */
+    @media only screen and (max-width: 768px) {
+      .modelCard {
+        width: 45%;
+      }
+    }
+
+    @media only screen and (max-width: 480px) {
+      .modelCard {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Pulsante per tornare alla Home -->
+  <button id="button" onclick="goToHome()">HOME</button>
+
+  <!-- Titolo -->
+  <h1>KAWASAKI</h1>
+
+  <!-- Contenitore per i modelli di moto -->
+  <div id="modelContent"></div>
+
+  <!-- Script JavaScript -->
+  <script>
+    // Funzione chiamata quando il pulsante "Aggiungi al carrello" viene cliccato
+    function addToCart(modelIndex) {
+      // Ottenere il modello selezionato
+      var model = models[modelIndex];
+
+      // Creare un oggetto rappresentante il prodotto da aggiungere al carrello
+      var cartItem = {
+        img: model.getElementsByTagName("imageLink")[0].textContent,
+        name: model.getElementsByTagName("name")[0].textContent,
+        price: model.getElementsByTagName("price")[0].textContent,
+        colors: [], // Aggiungere i colori qui
+        power: model.getElementsByTagName("powerCV")[0].textContent,
+        seatHeight: model.getElementsByTagName("seatHeight")[0].textContent
+      };
+
+      // Aggiungere i colori all'array colors
+      for (var j = 0; j <= 5; j++) {
+        var colorTag = model.getElementsByTagName("color" + j)[0];
+        if (colorTag) {
+          var color = colorTag.textContent;
+          cartItem.colors.push(color);
+        }
+      }
+
+      // Aggiungere il prodotto al carrello
+      addToLocalStorage(cartItem);
+
+    }
+
+    // Funzione per aggiungere un elemento al localStorage
+    function addToLocalStorage(item) {
+      var cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart.push(item);
+      localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
+    // Funzione per aprire la pagina del carrello nella stessa finestra
+    function apriPaginaCarrello() {
+      window.location.href = 'carello.html';
+    }
+
+    // Funzione per tornare alla Home
+    function goToHome() {
+      window.location.href = "modelli.html";
+    }
+
+    // Funzione per caricare il file XML
+    function loadXML(xmlFile) {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+          displayContent(this);
+        }
+      };
+      xhttp.open("GET", xmlFile, true);
+      xhttp.send();
+    }
+
+    // Funzione per visualizzare il contenuto del file XML
+    function displayContent(xml) {
+      var xmlDoc = xml.responseXML;
+      models = xmlDoc.getElementsByTagName("model"); // Aggiunto il riferimento globale ai modelli
+
+      var modelContent = document.getElementById("modelContent");
+
+      for (var i = 0; i < models.length; i++) {
+        var model = models[i];
+
+        var modelDiv = document.createElement("div");
+        modelDiv.className = "modelCard";
+        modelDiv.innerHTML += "<img src='" + model.getElementsByTagName("imageLink")[0].textContent + "' alt='Model Image'>";
+        modelDiv.innerHTML += "<h2>Nome: " + model.getElementsByTagName("name")[0].textContent + "</h2>";
+        modelDiv.innerHTML += "<p>Prezzo: " + model.getElementsByTagName("price")[0].textContent + "</p>";
+
+        // Aggiungi dettagli colori
+        for (var j = 0; j <= 5; j++) {
+          var colorTag = model.getElementsByTagName("color" + j)[0];
+          if (colorTag) {
+            var color = colorTag.textContent;
+            modelDiv.innerHTML += "<p>Colori: " + color + "</p>";
+          }
+        }
+
+        modelDiv.innerHTML += "<p>Potenza: " + model.getElementsByTagName("powerCV")[0].textContent + "</p>";
+        modelDiv.innerHTML += "<p>Altezza Sella: " + model.getElementsByTagName("seatHeight")[0].textContent + "</p>";
+
+        // Aggiungi pulsante "Aggiungi al carrello"
+        modelDiv.innerHTML += "<button class='addToCartButton' onclick='addToCart(" + i + ")'>Aggiungi al carrello</button>";
+
+        modelContent.appendChild(modelDiv);
+      }
+    }
+
+    // Caricamento dinamico del file XML
+    loadXML('xmlKawasaki.xml');
+
+    // Gestione degli eventi delle frecce direzionali del browser
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'ArrowLeft') { // Freccia sinistra
+        goToHome();
+      } else if (event.key === 'ArrowRight') { // Freccia destra
+        apriPaginaCarrello();
+      }
+    });
+  </script>
+
+  <!-- Icona del carrello -->
+  <img id="carrello-icon" src="https://images.emojiterra.com/twitter/v13.1/512px/1f6d2.png" alt="Carrello" width="30" height="30" onclick="apriPaginaCarrello()">
+
+</body>
+
+</html>

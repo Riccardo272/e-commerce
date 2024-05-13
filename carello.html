@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: LightGray;
+      color: black;
+      margin: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 34px;
+      color: red;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: space-evenly;
+      overflow-x: auto;
+    }
+
+    .cart-item {
+      position: relative;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: white;
+      margin: 10px;
+      padding: 10px;
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .delete-icon {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      cursor: pointer;
+      color: #dc3545;
+      font-size: 1.5em;
+    }
+
+    img {
+      width: 100%;
+      max-width: 200px;
+      height: auto;
+      margin-bottom: 10px;
+    }
+
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+
+    .quantity-controls button {
+      padding: 5px;
+      margin: 0 5px;
+      cursor: pointer;
+      background-color: #00bcd4;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+    }
+
+    .color-checkbox {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .color-checkbox input {
+      margin-right: 5px;
+    }
+
+    .iva {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    button {
+      padding: 10px;
+      margin: 20px;
+      cursor: pointer;
+      background-color: #00bcd4;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .invoice-name,
+    .invoice-details,
+    .iva,
+    #customerInfo {
+      text-align: left;
+      margin-left: 20px;
+    }
+
+    #customerInfo label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    #customerInfo input {
+      width: 10%;
+      padding: 5px;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+    }
+
+    /* Aggiunto stile per la pagina di stampa della fattura */
+    .invoice-container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .invoice-details {
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    .invoice-details p {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Carrello</h1>
+
+  <div id="cartContent" class="container"></div>
+
+  <!-- Aggiungi la sezione per i dati obbligatori -->
+  <div id="customerInfo">
+    <label for="firstName">Nome:</label>
+    <input type="text" id="firstName" required>
+    <label for="lastName">Cognome:</label>
+    <input type="text" id="lastName" required>
+    <label for="country">Paese:</label>
+    <input type="text" id="country" required>
+    <label for="state">Stato:</label>
+    <input type="text" id="state" required>
+    <label for="zipCode">CAP (5 numeri):</label>
+    <input type="text" id="zipCode" pattern="[0-9]{5}" required>
+    <label for="cf">Codice Fiscale:</label>
+    <input type="text" id="cf" pattern="[A-Za-z0-9]{16}" required>
+  </div>
+
+  <div id="iva" class="iva">IVA: 22%</div>
+
+  <button onclick="createAndShowInvoice()">Stampa Fattura</button>
+
+  <script>
+    window.onload = function () {
+      loadFile('jsonHonda.json', displayCart);
+    };
+
+    function loadFile(fileName, callback) {
+      fetch(fileName)
+        .then(response => response.json())
+        .then(data => callback(data))
+        .catch(error => console.error('Error loading JSON file:', error));
+    }
+
+    function displayCart(hondaData) {
+      var cart = JSON.parse(localStorage.getItem('cart')) || [];
+      var cartContentDiv = document.getElementById('cartContent');
+
+      if (!cartContentDiv) {
+        console.error("Element with ID 'cartContent' not found.");
+        return;
+      }
+
+      cartContentDiv.innerHTML = '';
+
+      for (var i = 0; i < cart.length; i++) {
+        var cartItem = cart[i];
+        var cartItemDiv = document.createElement('div');
+        cartItemDiv.className = 'cart-item';
+        cartItemDiv.setAttribute('data-index', i);
+
+        var deleteIcon = document.createElement('span');
+        deleteIcon.className = 'delete-icon';
+        deleteIcon.textContent = 'X';
+        deleteIcon.addEventListener('click', function (index) {
+          return function () {
+            deleteCard(index);
+          };
+        }(i));
+        cartItemDiv.appendChild(deleteIcon);
+
+        var itemImg = document.createElement('img');
+        itemImg.src = cartItem.img;
+        itemImg.alt = "Immagine del prodotto";
+        cartItemDiv.appendChild(itemImg);
+
+        var itemName = document.createElement('p');
+        itemName.textContent = "Nome: " + cartItem.name;
+        cartItemDiv.appendChild(itemName);
+
+        var itemPrice = document.createElement('p');
+        itemPrice.textContent = "Prezzo: " + cartItem.price;
+        cartItemDiv.appendChild(itemPrice);
+
+        var itemColors = document.createElement('div');
+        itemColors.className = 'color-checkbox';
+
+        var colorsLabel = document.createElement('p');
+        colorsLabel.textContent = "Colori: ";
+        itemColors.appendChild(colorsLabel);
+
+        for (var j = 0; j < cartItem.colors.length; j++) {
+          var colorCheckbox = document.createElement('input');
+          colorCheckbox.type = 'checkbox';
+          colorCheckbox.checked = false;
+          colorCheckbox.disabled = false;
+          colorCheckbox.id = 'colorCheckbox_' + i + '_' + j;
+
+          var colorLabel = document.createElement('label');
+          colorLabel.textContent = cartItem.colors[j];
+          colorLabel.setAttribute('for', 'colorCheckbox_' + i + '_' + j);
+
+          colorCheckbox.addEventListener('change', function (e) {
+            handleCheckboxChange(e.target.id);
+          });
+
+          itemColors.appendChild(colorCheckbox);
+          itemColors.appendChild(colorLabel);
+        }
+
+        cartItemDiv.appendChild(itemColors);
+
+        var itemPower = document.createElement('p');
+        itemPower.textContent = "Potenza: " + cartItem.power;
+        cartItemDiv.appendChild(itemPower);
+
+        var itemSeatHeight = document.createElement('p');
+        itemSeatHeight.textContent = "Altezza sella: " + cartItem.seatHeight;
+        cartItemDiv.appendChild(itemSeatHeight);
+
+        var itemQuantity = document.createElement('div');
+        itemQuantity.className = 'quantity-controls';
+
+        var decreaseButton = document.createElement('button');
+        decreaseButton.textContent = '-';
+        decreaseButton.addEventListener('click', function (index) {
+          return function () {
+            updateQuantity(index, -1);
+          };
+        }(i));
+        itemQuantity.appendChild(decreaseButton);
+
+        var quantityDisplay = document.createElement('span');
+        quantityDisplay.textContent = cartItem.quantity || 1;
+        itemQuantity.appendChild(quantityDisplay);
+
+        var increaseButton = document.createElement('button');
+        increaseButton.textContent = '+';
+        increaseButton.addEventListener('click', function (index) {
+          return function () {
+            updateQuantity(index, 1);
+          };
+        }(i));
+        itemQuantity.appendChild(increaseButton);
+
+        cartItemDiv.appendChild(itemQuantity);
+
+        cartContentDiv.appendChild(cartItemDiv);
+      }
+    }
+
+    function updateQuantity(index, change) {
+      var cart = JSON.parse(localStorage.getItem('cart')) || [];
+      var cartItem = cart[index];
+
+      if (cartItem) {
+        cartItem.quantity = (cartItem.quantity || 1) + change;
+        localStorage.setItem('cart', JSON.stringify(cart));
+        displayCart();
+      }
+    }
+
+    function handleCheckboxChange(clickedCheckboxId) {
+      var clickedCheckbox = document.getElementById(clickedCheckboxId);
+      var checkboxes = document.querySelectorAll('.color-checkbox input');
+
+      checkboxes.forEach(function (checkbox) {
+        if (checkbox.id !== clickedCheckboxId && checkbox.closest('.cart-item') === clickedCheckbox.closest('.cart-item')) {
+          checkbox.checked = false;
+        }
+      });
+    }
+
+    function deleteCard(index) {
+      var cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart.splice(index, 1);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      displayCart();
+    }
+
+    function createAndShowInvoice() {
+      var cart = JSON.parse(localStorage.getItem('cart')) || [];
+      var checkboxes = document.querySelectorAll('.color-checkbox input:checked');
+
+      if (checkboxes.length === 0) {
+        alert('Seleziona almeno un colore per ogni articolo prima di stampare la fattura.');
+        return;
+      }
+
+      var selectedItems = [];
+
+      checkboxes.forEach(function (checkbox) {
+        var cartItem = cart[parseInt(checkbox.closest('.cart-item').getAttribute('data-index'))];
+        var colorIndex = parseInt(checkbox.id.split('_')[2]);
+        var selectedColor = cartItem.colors[colorIndex];
+
+        selectedItems.push({
+          productName: cartItem.name,
+          price: cartItem.price,
+          quantity: cartItem.quantity || 1,
+          power: cartItem.power,
+          seatHeight: cartItem.seatHeight,
+          selectedColor: selectedColor
+        });
+      });
+
+      // Aggiungi l'IVA del 22%
+      var ivaAmount = selectedItems.reduce((total, item) => total + (item.price * item.quantity * 0.22), 0);
+      selectedItems.push({
+        productName: 'IVA 22%',
+        price: ivaAmount,
+        quantity: 1
+      });
+
+      // Controllo campi obbligatori
+      var firstNameInput = document.getElementById('firstName');
+      var lastNameInput = document.getElementById('lastName');
+      var countryInput = document.getElementById('country');
+      var stateInput = document.getElementById('state');
+      var zipCodeInput = document.getElementById('zipCode');
+      var cfInput = document.getElementById('cf');
+
+      if (!firstNameInput.value || !lastNameInput.value || !countryInput.value || !stateInput.value || !zipCodeInput.value || !cfInput.value) {
+        alert('Compila tutti i campi obbligatori prima di stampare la fattura.');
+        return;
+      }
+
+      // Controllo lunghezza Codice Fiscale
+      if (cfInput.value.length !== 16) {
+        alert('Il Codice Fiscale deve essere composto da 16 caratteri (lettere e numeri).');
+        return;
+      }
+
+      var invoiceName = 'Fattura_' + new Date().getTime();
+      var invoiceData = {
+        name: invoiceName,
+        items: selectedItems,
+        customer: {
+          firstName: firstNameInput.value,
+          lastName: lastNameInput.value,
+          country: countryInput.value,
+          state: stateInput.value,
+          zipCode: zipCodeInput.value,
+          cf: cfInput.value
+        }
+      };
+
+      // Converti l'oggetto "fattura" in formato JSON
+      var invoiceJSON = JSON.stringify(invoiceData);
+
+      // Memorizza la fattura JSON in sessionStorage
+      sessionStorage.setItem('invoice', invoiceJSON);
+
+      // Reindirizza l'utente alla pagina della fattura
+      window.location.href = 'stampaFattura.html?' + encodeURI(JSON.stringify(selectedItems));
+    }
+  </script>
+</body>
+
+</html>
